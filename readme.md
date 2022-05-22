@@ -1,4 +1,16 @@
 # Pharmacy management system
+## Inspiration
+Many a times, doctor prescribe such medicines that are not available in pharmacy but have the meds of same compositions, might also be cheeper then the that, this helps both customer and pharmacy owner.
+Hence I've come up with an idea, where user can update inventory with some easy entries and make super quick and effectively and also get an get a keen eye about meds flow and revenue generation.
+
+## Tools used
+- Backend: Django
+- Frontend: HTML5, CSS3, Javascript, Jquery, Bootstrap
+- Dinamic Data Fetch: AJAX
+- Web Scrapping: Beautiful Soup
+- database: SQLite3
+- Graphs: Graph jS
+
 
 ## Features
 - New Inventory with automatic composition fetch

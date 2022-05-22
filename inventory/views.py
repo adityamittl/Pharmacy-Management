@@ -11,6 +11,7 @@ import shutil
 
 cwd = os.getcwd()
 
+# upadting the stock
 def updateInventory(request):
     if request.method == 'POST':
         name = request.POST['name']
@@ -29,16 +30,18 @@ def updateInventory(request):
         med.save()
     return render(request,"inventory.html")
 
+# Render bill generator page, for adding transections
 def billing(request):
     return render(request,'billing.html')
 
+# Fetch composition of unknown drug(relative to stock)
 def getComposition(request):
     if request.method == 'POST':
         name =json.loads(request.body.decode('utf-8')).get('name')
         medName, composition = fetchDetail(name)
         return JsonResponse({"medName":medName,"composition":composition})
 
-
+# Find alternative of unknown drug
 def findAlternative(request):
     if request.method == 'POST':
         name = request.body.decode('utf-8').split("=")[1].replace("+"," ")
@@ -66,6 +69,7 @@ def findAlternative(request):
         # print(res)
         return JsonResponse(res)
 
+# Auto complete form finding meds in stock
 def findMedicine(request):
     if request.method == 'POST':
         name = request.body.decode('utf-8').split("=")[1].replace("+"," ")

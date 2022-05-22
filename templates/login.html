@@ -46,7 +46,7 @@
 
         .section2 {
             height: 100%;
-            width: 50%;
+            width: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -70,12 +70,11 @@
         }
 
         .submitb {
-            height: 20px;
             border: none;
-            border-radius: 0;
+            border-radius: 10px;
             outline: 1px solid blue;
-            width: 50px;
-            margin-top: 25px;
+            margin: auto;
+            padding: 10px;
         }
 
 
@@ -97,14 +96,12 @@
 <body>
     <section>
         <main>
-            <div class="section1"></div>
             <div class="section2">
-                <h1 class="greet">Welcome Back</h1>
+                <h1 class="greet">Login to access admin Privilages</h1>
                 <form action="" method="post" class="form">
                     {% csrf_token %}
                     {{ form }}
                     <input type="submit" value="submit" class="submitb">
-                    <a href="/signup">Signup</a>
                 </form>
             </div>
         </main>
