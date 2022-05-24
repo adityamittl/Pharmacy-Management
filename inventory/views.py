@@ -1,3 +1,4 @@
+from genericpath import exists
 from django.shortcuts import redirect, render
 from django.http import JsonResponse,HttpResponse
 from urllib3 import HTTPResponse
@@ -8,14 +9,26 @@ import itertools
 import datetime 
 import os
 import shutil
-
+from django.contrib.auth.decorators import login_required
 cwd = os.getcwd()
+
+def checkProfile(request):
+    try:
+        profile.objects.get(id=1)
+    except:
+        return True
+
 
 # upadting the stock
 def updateInventory(request):
+    if checkProfile(request):
+        return redirect('/setup')
     if request.method == 'POST':
         name = request.POST['name']
-        price = request.POST.get("price")
+        TPP = request.POST.get("TPP")
+        price = float("{:.2f}".format(float(request.POST.get("price"))/(int(TPP))))
+        purchasePrice = float("{:.2f}".format(float(request.POST.get("Pprice"))/int(TPP)))
+        batchNo = request.POST.get("BatchNo")
         composition = request.POST.get("composition")
         quantity = request.POST.get("quantity")
         HSN = request.POST.get("HSN")
@@ -25,13 +38,18 @@ def updateInventory(request):
         med.price = price
         med.composition = composition
         med.quantity = quantity
+        med.purchasedPrice = purchasePrice
+        med.batchNo = batchNo
         med.HSN = HSN
         med.expiryDate = expiry
         med.save()
+        return redirect('/')
     return render(request,"inventory.html")
 
 # Render bill generator page, for adding transections
 def billing(request):
+    if checkProfile(request):
+        return redirect('/setup')
     return render(request,'billing.html')
 
 # Fetch composition of unknown drug(relative to stock)
@@ -74,7 +92,7 @@ def findMedicine(request):
     if request.method == 'POST':
         name = request.body.decode('utf-8').split("=")[1].replace("+"," ")
         # print("----",name)
-        med = medicines.objects.filter(name__icontains=name)
+        med = medicines.objects.filter(name__icontains=name , quantity__gte=1).distinct()
         # print(med)
         res = {}
         for i in range(len(med)):
@@ -84,7 +102,7 @@ def findMedicine(request):
 
 def getprice(request, name):
     try:
-        med = medicines.objects.get(name=name)
+        med = medicines.objects.filter(name=name, quantity__gte=1)[0]
         return JsonResponse({"price":med.price,"quantity":med.quantity})
     except:
         return JsonResponse({"price":"Not Available","quantity":"Not Available"})
@@ -99,7 +117,6 @@ def generateBill(request):
         total = data.get('total')
         discount = data.get('discount')
         subtotal = data.get('subtotal')
-        # print(n/ame,doctor,total,discount)
         meds = data.get('medicines')
         for i in meds.keys():
             newEntry = bill()
@@ -133,10 +150,16 @@ def fetchBill(request,name):
     firmData = profile.objects.get(id=1)
     return render(request,'bill.html',{'bill':bill,'data':meds,'firmData':firmData})
 
+@login_required
 def analysis(request):
+    if checkProfile(request):
+        return redirect('/setup')
     monthsList = ["",'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     try:
         data = bill.objects.all()
+        if not data.exists():
+            return render(request,'analysis.html',{'isData':False})
+
     except:
         return render(request,'analysis.html',{'isData':False})
     res = {}
@@ -171,7 +194,7 @@ def analysis(request):
         currdate = "-".join(str(data.date).split("-")[2::])
         newMonth = "-".join([monthsList[int(month.split('-')[1])],month.split("-")[0]])
         if(newMonth not in salesData.keys()):
-            salesData[newMonth] = {"Revenue": data.total, "Earned": sum([(res.meds.price*res.quantity - res.meds.purchasedPrice*res.quantity) for res in (rev for rev in data.meds.all())]), "Sold": sum([res.quantity for res in (rev for rev in data.meds.all())])}
+            salesData[newMonth] = {"Revenue": data.total, "Earned": sum([(round((res.meds.price*res.quantity)*100)/100 - round((res.meds.purchasedPrice*res.quantity)*100)/100) for res in (rev for rev in data.meds.all())]), "Sold": sum([res.quantity for res in (rev for rev in data.meds.all())])}
         else:
             salesData[newMonth] = {"Revenue": salesData[newMonth]['Revenue']+data.total,"Earned": salesData[newMonth]['Earned'] + sum([(res.meds.price*res.quantity - res.meds.purchasedPrice*res.quantity) for res in (rev for rev in data.meds.all())]), "Sold": salesData[newMonth]['Sold'] + sum([res.quantity for res in (rev for rev in data.meds.all())])}
         salesData[newMonth]['Earned'] = salesData[newMonth]['Earned'] - data.discount
@@ -182,14 +205,18 @@ def analysis(request):
                 dailySales[str(currdate)] = {"Revenue": data.total}
             else:
                 dailySales[str(currdate)] = {"Revenue" : dailySales[str(currdate)]['Revenue']+data.total}
-    
-    dailySales["Month"] = "-".join([monthsList[int(mdate.split('-')[1])],mdate.split("-")[0]])
+    salesMonth = {}
+    salesMonth["Month"] = "-".join([monthsList[int(mdate.split('-')[1])],mdate.split("-")[0]])
 
     earning["Earned"] = earning['Revenue'] - earning['shopPrice']
     earning = json.loads(json.dumps(earning))
-    return render(request,'analysis.html',{'isData':True,'data':medFrequency,'sales':salesData,'daily':dailySales,'earning':earning})
+    print(dailySales,salesData,earning)
+    return render(request,'analysis.html',{'isData':True,'data':medFrequency,'sales':salesData,'daily':dailySales,'earning':earning,'salesMonth': salesMonth})
 
+@login_required
 def StockItems(request):
+    if checkProfile(request):
+        return redirect('/setup')
     data = medicines.objects.filter(quantity__gte=1)
     return render(request,'items.html',{'data':data})
 
@@ -200,6 +227,8 @@ def checkQuantity(request):
     med = medicines.objects.get(name=name)
     return JsonResponse({"quantity":med.quantity})
 
+
+@login_required
 def setup(request):
     if request.method == 'POST':
         name = request.POST.get('Sname')
@@ -239,18 +268,22 @@ def setup(request):
     except:
         return render(request,'setup.html',{'isData':False})
 
+@login_required
 def oldInventory(request):
+    if checkProfile(request):
+        return redirect('/setup')
     data = medicines.objects.filter(quantity__lte=1)
     return render(request,'oldstock.html',{'data':data})
 
-
+@login_required
 def backupdb(request):
-
+    if checkProfile(request):
+        return redirect('/setup')
     if request.method == 'POST':
         base_dir = cwd+"\\db.sqlite3"
         new_dir = "\\".join(cwd.split("\\")[:len(cwd.split("\\"))-1:])
         id = backup()
-        id.name = str(new_dir)
+        id.name = str(new_dir+"\\backup")
         id.save()
         try:
             os.mkdir(new_dir+"\\backup")
@@ -264,3 +297,12 @@ def backupdb(request):
         return render(request,'backup.html',{'data':data,'isData':True})
     except:
         return render(request,'backup.html',{'isData':False})
+
+
+def findMedicineByComposition(request):
+    if request.method == 'POST':
+        comp = request.body.decode('utf-8')
+        comp = json.loads(comp)
+        comp = comp.get('comp').upper()
+        data = medicines.objects.filter(composition__icontains=comp)
+        return JsonResponse('')

@@ -21,9 +21,9 @@ class medicines(models.Model):
     name = models.CharField(max_length=100)
     composition = models.CharField(max_length=200)
     quantity = models.IntegerField()
-    purchasedPrice = models.IntegerField(blank=True, null=True)
+    purchasedPrice = models.FloatField(blank=True, null=True)
     batchNo = models.CharField(max_length = 100, blank = True, null = True)
-    price = models.IntegerField()
+    price = models.FloatField()
     expiryDate = models.DateField()
     HSN = models.CharField(max_length=100, null = True, blank = True)
     def __str__(self):
@@ -41,9 +41,9 @@ class invoice(models.Model):
     name = models.CharField(max_length=100)
     doctor = models.CharField(max_length=100)
     date = models.DateField(auto_now_add=True)
-    subtotal = models.IntegerField( blank=True, null=True)
-    discount = models.IntegerField(default=0)
-    total = models.IntegerField(default=0)
+    subtotal = models.FloatField( blank=True, null=True)
+    discount = models.FloatField(default=0)
+    total = models.FloatField(default=0)
     meds = models.ManyToManyField(bill,null=True, blank=True)
     def __str__(self):
         return self.name

@@ -16,9 +16,9 @@
     <style>
         body {
             background-image: url('/static/cool-background.png');
-            /* background-position: center;
+            background-position: center;
             background-repeat: no-repeat;
-            /* background-color: yellow; */
+            /* background-color: yellow;*/
         }
 
 
@@ -50,7 +50,7 @@
 
         input[type="text"] {
             width: 400px;
-            padding: 10px;
+            padding: 5px 0 5px 10px;
             border-radius: 5px;
             border: none;
             margin-top: 10px;
@@ -82,25 +82,26 @@
             {% csrf_token %}
             <div style="display: flex;">
                 <input type="text" placeholder="Medicine Name" id="medName" name="name" autocomplete="off"
-                    style="width: 320px;">
+                    style="width: 320px;" required>
                 <div onclick="add_inventory()" class="btn btn-outline-info"
                     style="height: 50px; margin-top: 10px; width: 70px; margin-left: 10px;">
                     Fetch</div>
             </div>
-            <input type="text" placeholder="Quantity" name="quantity" autocomplete="off">
-            <input type="text" placeholder="Selling Price" name="price" autocomplete="off">
-            <input type="text" placeholder="Purchased Price" name="price" autocomplete="off">
-            <input type="text" placeholder="HSN number" name="HSN" autocomplete="off">
-            <input type="text" placeholder="Batch Number" name="barcode" autocomplete="off">
+            <input type="text" placeholder="Quantity" name="quantity" autocomplete="off" required>
+            <input type="text" placeholder="Tablets per patta" name="TPP" autocomplete="off" required>
+            <input type="text" placeholder="Selling Price" name="price" autocomplete="off" required>
+            <input type="text" placeholder="Purchased Price" name="Pprice" autocomplete="off" required>
+            <input type="text" placeholder="HSN number" name="HSN" autocomplete="off" required>
+            <input type="text" placeholder="Batch Number" name="BatchNo" autocomplete="off" required>
             <div>
                 <label style="margin-right: 10px; color: white;">Expiry Date: </label>
-                <input type="date" placeholder="Expiry Date" name="expiry" autocomplete="off">
+                <input type="date" placeholder="Expiry Date" name="expiry" autocomplete="off" required>
             </div>
             <input type="text" placeholder="Composition" disabled id="comps" name="composition" autocomplete="off"
-                style="color: black;">
-            <input type="text" placeholder="Fetched Name" disabled id="fName" autocomplete="off" style="color: white;">
+                style="color: black;" required>
+            <input type="text" placeholder="Fetched Name" disabled id="fName" autocomplete="off" style="color: white;" required>
             <input type="submit" value="Submit" class="btn btn-outline-primary" autocomplete="off"
-                style="margin-top: 20px;">
+                style="margin-top: 20px;" required>
         </form>
     </div>
     <script>

@@ -108,11 +108,15 @@
                 <td class="tg-0lax">{{ forloop.counter }}</td>
                 <td class="tg-0lax">{{ med.meds.name }}</td>
                 <td class="tg-0lax">{{ med.quantity }}</td>
-                <td class="tg-0lax">{{med.HSN}}</td>
+                <td class="tg-0lax">{{med.meds.HSN}}</td>
                 <td class="tg-0lax">{{ med.meds.batchNo }}</td>
                 <td class="tg-0lax">{{ med.meds.expiryDate }}</td>
-                <td class="tg-0lax">{{ med.meds.price }}</td>
-                <td class="tg-0lax">{{ med.meds.price }}</td>
+                <td class="tg-0lax" id="MRP">{{ med.meds.price }}</td>
+                <td class="tg-0lax" id="GrandTotal"></td>
+                <script>
+                    var GrandTotal = document.getElementById("GrandTotal");
+                    GrandTotal.innerHTML = Math.round(eval('{{ med.meds.price }} * {{med.quantity}}')*100)/100;
+                </script>
             </tr>
             {% endfor %}
             <tr>
