@@ -553,9 +553,9 @@ function medAlt() {
   var med = document.getElementById("Composition_search").value;
   $.ajax({
     url: "/findMedicineByName",
-    data: {
+    data: JSON.stringify({
       med: med,
-    },
+    }),
     method: "POST",
     headers: {
       "X-CSRFToken": document.getElementsByName("csrfmiddlewaretoken")[0].value,

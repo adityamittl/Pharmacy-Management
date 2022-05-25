@@ -67,12 +67,12 @@ def findAlternative(request):
         #     comp = medicines.objects.get(name=name).composition
         #     print("Here")
         # except:
-        print(comp)
+        # print(comp)
         try:
             alts = medicines.objects.filter(composition= comp)
         except:
             alts = []
-        print(alts)
+        # print(alts)
         res = {}
         for alt in alts:
             res[alt.name] = [alt.quantity,alt.price]
@@ -212,7 +212,7 @@ def analysis(request):
 
     earning["Earned"] = earning['Revenue'] - earning['shopPrice']
     earning = json.loads(json.dumps(earning))
-    print(dailySales,salesData,earning)
+    # print(dailySales,salesData,earning)
     return render(request,'analysis.html',{'isData':True,'data':medFrequency,'sales':salesData,'daily':dailySales,'earning':earning,'salesMonth': salesMonth})
 
 @login_required
@@ -304,22 +304,18 @@ def backupdb(request):
 def findMedicineByComposition(request):
     if request.method == 'POST':
         comp = request.body.decode('utf-8').split("=")[1].upper()
-        print("--------",comp)
-        # comp = json.loads(comp)
-        # comp = comp.get('comp').upper()
         data = medicines.objects.filter(composition__icontains=comp, quantity__gte=1)
         res = {}
         for i in range(len(data)):
             res[i] = data[i].composition
-        print(res)
         return JsonResponse(res)
 
 def findMedicineByName(request):
     if request.method == 'POST':
-        name = request.body.decode('utf-8').split("=")[1].upper()
+        name = request.body.decode('utf-8').upper()
+        name = json.loads(name)['MED']
         data = medicines.objects.filter(composition=name, quantity__gte=1)
         res = {}
         for alt in data:
             res[alt.name] = [alt.quantity,alt.price]
-        print(res)
         return JsonResponse(res)
