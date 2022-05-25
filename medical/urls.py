@@ -19,5 +19,6 @@ urlpatterns = [
     path('',include("authentication.urls")),
     path('oldstock',oldInventory),
     path('backup',backupdb),
-    path('findMedicineByComposition',findMedicineByComposition)
+    path('findMedicineByComposition',findMedicineByComposition),
+    path('findMedicineByName',findMedicineByName),
 ]

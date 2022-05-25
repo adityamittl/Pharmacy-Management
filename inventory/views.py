@@ -1,7 +1,5 @@
-from genericpath import exists
 from django.shortcuts import redirect, render
-from django.http import JsonResponse,HttpResponse
-from urllib3 import HTTPResponse
+from django.http import JsonResponse
 from .models import medicines,bill,invoice,profile,backup
 from .scrap import fetchDetail
 import json
@@ -20,6 +18,7 @@ def checkProfile(request):
 
 
 # upadting the stock
+@login_required
 def updateInventory(request):
     if checkProfile(request):
         return redirect('/setup')
@@ -63,14 +62,17 @@ def getComposition(request):
 def findAlternative(request):
     if request.method == 'POST':
         name = request.body.decode('utf-8').split("=")[1].replace("+"," ")
-        try:
-            comp = medicines.objects.get(name=name).composition
-        except:
-            x,comp = fetchDetail(name)
+        x,comp = fetchDetail(name)
+        # try:
+        #     comp = medicines.objects.get(name=name).composition
+        #     print("Here")
+        # except:
+        print(comp)
         try:
             alts = medicines.objects.filter(composition= comp)
         except:
             alts = []
+        print(alts)
         res = {}
         for alt in alts:
             res[alt.name] = [alt.quantity,alt.price]
@@ -92,7 +94,7 @@ def findMedicine(request):
     if request.method == 'POST':
         name = request.body.decode('utf-8').split("=")[1].replace("+"," ")
         # print("----",name)
-        med = medicines.objects.filter(name__icontains=name , quantity__gte=1).distinct()
+        med = medicines.objects.filter(name__icontains=name , quantity__gte=1)
         # print(med)
         res = {}
         for i in range(len(med)):
@@ -301,8 +303,23 @@ def backupdb(request):
 
 def findMedicineByComposition(request):
     if request.method == 'POST':
-        comp = request.body.decode('utf-8')
-        comp = json.loads(comp)
-        comp = comp.get('comp').upper()
-        data = medicines.objects.filter(composition__icontains=comp)
-        return JsonResponse('')
+        comp = request.body.decode('utf-8').split("=")[1].upper()
+        print("--------",comp)
+        # comp = json.loads(comp)
+        # comp = comp.get('comp').upper()
+        data = medicines.objects.filter(composition__icontains=comp, quantity__gte=1)
+        res = {}
+        for i in range(len(data)):
+            res[i] = data[i].composition
+        print(res)
+        return JsonResponse(res)
+
+def findMedicineByName(request):
+    if request.method == 'POST':
+        name = request.body.decode('utf-8').split("=")[1].upper()
+        data = medicines.objects.filter(composition=name, quantity__gte=1)
+        res = {}
+        for alt in data:
+            res[alt.name] = [alt.quantity,alt.price]
+        print(res)
+        return JsonResponse(res)

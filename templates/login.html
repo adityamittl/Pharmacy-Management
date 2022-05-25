@@ -102,10 +102,18 @@
                     {% csrf_token %}
                     {{ form }}
                     <input type="submit" value="submit" class="submitb">
+                    <a href="/signup" style="margin-top: 50px;">Signup</a>
                 </form>
             </div>
         </main>
     </section>
+    <script>
+        document.getElementsByTagName("input")[0].focus();
+        document.getElementById('id_username').style.paddingLeft = '20px';
+        document.getElementById('id_username').setAttribute('placeholder', 'Username');
+        document.getElementById('id_password').style.paddingLeft = '20px';
+        document.getElementById('id_password').setAttribute('placeholder', 'Password');
+    </script>
 </body>
 
 </html>

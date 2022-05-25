@@ -256,7 +256,7 @@ function findALternative() {
     },
     success: function (data) {
       showAlternative(data);
-      // console.log("--",data.keys);
+      console.log("--",data.keys, data.values, data);
       t = JSON.stringify(data);
       console.log("-----", t.length);
       if (t.length == 2) {
@@ -291,10 +291,11 @@ $(function () {
         },
         success: function (data) {
           $.each(data, function (key, value) {
-            console.log(value);
-            meds.push(value[0]);
+            console.log("*****",value);
+            meds.push(value);
           });
           response(meds);
+          console.log(meds);
           if (meds.length == 0) {
             document.getElementById("altbtn").style.display = "block";
             console.log(meds);

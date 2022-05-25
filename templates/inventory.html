@@ -15,9 +15,11 @@
 
     <style>
         body {
-            background-image: url('/static/cool-background.png');
-            background-position: center;
-            background-repeat: no-repeat;
+            background: rgb(83, 72, 121);
+            background: -moz-linear-gradient(45deg, rgba(83, 72, 121, 1) 5%, rgba(135, 26, 140, 1) 49%, rgba(222, 82, 176, 1) 84%);
+            background: -webkit-linear-gradient(45deg, rgba(83, 72, 121, 1) 5%, rgba(135, 26, 140, 1) 49%, rgba(222, 82, 176, 1) 84%);
+            background: linear-gradient(45deg, rgba(83, 72, 121, 1) 5%, rgba(135, 26, 140, 1) 49%, rgba(222, 82, 176, 1) 84%);
+            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#534879", endColorstr="#de52b0", GradientType=1);
             /* background-color: yellow;*/
         }
 
@@ -74,7 +76,7 @@
         <a class="nav-link me2" href="/analyse">Dashboard</a>
         <a class="nav-link" style="float: right;" href="/signout">Logout</a>
         {% else %}
-        <a class="nav-link" style="float: right;"  href="/login">Login</a>
+        <a class="nav-link" style="float: right;" href="/login">Login</a>
         {% endif %}
     </nav>
     <div class="formwrap">
@@ -99,7 +101,8 @@
             </div>
             <input type="text" placeholder="Composition" disabled id="comps" name="composition" autocomplete="off"
                 style="color: black;" required>
-            <input type="text" placeholder="Fetched Name" disabled id="fName" autocomplete="off" style="color: white;" required>
+            <input type="text" placeholder="Fetched Name" disabled id="fName" autocomplete="off" style="color: white;"
+                required>
             <input type="submit" value="Submit" class="btn btn-outline-primary" autocomplete="off"
                 style="margin-top: 20px;" required>
         </form>
