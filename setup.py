@@ -14,7 +14,7 @@ pathToDesktop = curUsr + '\\Desktop\\pharmacy.pyw'
 f = open("main.pyw", "w")
 f.write("import subprocess\n")
 f.write("import webbrowser\n")
-f.write('\twebbrowser.open_new("http://localhost:8000/")\n')
+f.write('webbrowser.open_new("http://localhost:8000/")\n')
 f.write('subprocess.run(["daphne","medical.asgi:application"])')
 f.close()
 

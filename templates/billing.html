@@ -178,7 +178,7 @@
             <div class="card" style="margin-top: 25px;">
                 <div>
                     <input type="text" name="medicine" placeholder="Find By Composition" id="Composition_search">
-                    <img src="/static/circletick.svg" alt="" style="margin-left:2px; height: 43px; cursor: pointer;"
+                    <img src="https://img.icons8.com/office/30/000000/checked--v1.png" alt="" style="margin-left:2px; height: 43px; cursor: pointer;"
                         onclick="medAlt()">
 
                 </div>
@@ -187,7 +187,7 @@
                     <input type="number" name="mednums" id="mednums"
                         style="width: 40px; height:43px; border-radius: 5px; border: none; text-align: center;"
                         placeholder="0" min="0">
-                    <img src="/static/circletick.svg" alt="" style="margin-left:2px; height: 43px; cursor: pointer;"
+                    <img src="https://img.icons8.com/office/30/000000/checked--v1.png" alt="" style="margin-left:2px; height: 43px; cursor: pointer;"
                         onclick="selectThis()">
                 </div>
                 <button onclick="findALternative()" class="btn btn-info" style="margin-top: 30px; display: none;"
@@ -393,7 +393,7 @@ const selectThis = async () => {
   x.setAttribute("value", quantity);
 
   clse = document.createElement("img");
-  clse.setAttribute("src", "/static/close.svg");
+  clse.setAttribute("src", "https://img.icons8.com/flat-round/64/000000/delete-sign.png");
   clse.setAttribute("onclick", `removeRow(${nextMedNo})`);
   clse.setAttribute("class", "close");
 
@@ -471,7 +471,7 @@ const showAlternative = (data) => {
       return;
     }
     $("#alternatives").append(
-      `<div class="showalts"><strong>${key}</strong> - price: ${value[1]} Quantity: ${value[0]} <span onclick="choosethis('${key}')"><img src = "/static/check.png" height="30px"></span></div>`
+      `<div class="showalts"><strong>${key}</strong> - price: ${value[1]} Quantity: ${value[0]} <span onclick="choosethis('${key}')"><img src = "https://img.icons8.com/emoji/48/000000/check-mark-emoji.png" height="30px"></span></div>`
     );
   });
 };
