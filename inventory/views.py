@@ -7,6 +7,7 @@ import itertools
 import datetime 
 import os
 import shutil
+from django.utils.timezone import now
 from django.contrib.auth.decorators import login_required
 cwd = os.getcwd()
 
@@ -18,7 +19,7 @@ def checkProfile(request):
 
 
 # upadting the stock
-@login_required
+# @login_required
 def updateInventory(request):
     if checkProfile(request):
         return redirect('/setup')
@@ -69,7 +70,7 @@ def findAlternative(request):
         # except:
         # print(comp)
         try:
-            alts = medicines.objects.filter(composition= comp)
+            alts = medicines.objects.filter(composition= comp, quantity__gte=1)
         except:
             alts = []
         # print(alts)
@@ -79,7 +80,7 @@ def findAlternative(request):
         if(len(alts)!=0):
             return JsonResponse(res)
         altsalt = comp.split('-')[0]
-        med = medicines.objects.filter(composition__icontains=altsalt)
+        med = medicines.objects.filter(composition__icontains=altsalt, quantity__gte=1)
         res = {}
         asalt = set([])
         for alt in med:
@@ -95,7 +96,7 @@ def findMedicine(request):
         name = request.body.decode('utf-8').split("=")[1].replace("+"," ")
         # print("----",name)
         med = medicines.objects.filter(name__icontains=name , quantity__gte=1)
-        # print(med)
+        print(med)
         res = {}
         for i in range(len(med)):
             res[str(i)] = med[i].name
@@ -133,7 +134,7 @@ def generateBill(request):
             newEntry = bill()
             medName = meds[i].get('medicine')
             quantity = meds[i].get('quantity')
-            med = medicines.objects.get(name=medName)
+            med = medicines.objects.get(name=medName,quantity__gte=1)
             med.quantity = int(med.quantity) - int(quantity)
             med.save()
             newEntry = bill.objects.create(meds=med,quantity=quantity)
